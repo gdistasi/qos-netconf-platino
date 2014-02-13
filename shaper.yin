@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:ietf:params:xml:ns:yang:yin:1" xmlns:shaper="http://www.comics.unina.it/nc/shaper" name="shaper">
+  <namespace uri="http://www.comics.unina.it/nc/shaper"/>
+  <prefix value="shaper"/>
+  <organization>
+    <text>COMICS at Unina Inc.</text>
+  </organization>
+  <contact>
+    <text>comics@comics.unina.it</text>
+  </contact>
+  <description>
+    <text>Module for configuring multiple qos classes on the egress queue of an interface of a Linux host.</text>
+  </description>
+  <revision date="2014-01-01">
+    <description>
+      <text>Initial revision.</text>
+    </description>
+  </revision>
+  <container name="shaper">
+    <list name="qdisc">
+      <key value="interface"/>
+      <leaf name="interface">
+        <type name="string"/>
+        <description>
+          <text>Interface to which the qos shaping policy is applied.</text>
+        </description>
+        <mandatory value="true"/>
+      </leaf>
+      <leaf name="bandwidth">
+        <type name="int64"/>
+        <description>
+          <text>Uplink bandwidth of the interface</text>
+        </description>
+        <mandatory value="true"/>
+      </leaf>
+      <list name="class">
+        <key value="id"/>
+        <leaf name="id">
+          <type name="int32"/>
+          <description>
+            <text>Id of the class.</text>
+          </description>
+          <mandatory value="true"/>
+        </leaf>
+        <leaf name="prio">
+          <type name="int64"/>
+          <description>
+            <text>Priority of the class.</text>
+          </description>
+        </leaf>
+        <leaf name="rate">
+          <type name="int64"/>
+          <description>
+            <text> Maximum rate this class and all its children are guaranteed. Mandatory. </text>
+          </description>
+          <mandatory value="true"/>
+        </leaf>
+        <leaf name="ceil">
+          <type name="int64"/>
+          <description>
+            <text>Maximum rate at which a class can send, if its parent has bandwidth to spare. Defaults to the configured rate, which implies no borrowing.</text>
+          </description>
+        </leaf>
+        <leaf name="burst">
+          <type name="int64"/>
+          <description>
+            <text>Amount of bytes that can be burst at ceil speed, in excess of the configured rate. Should be at least as high as the highest burst of all children.</text>
+          </description>
+        </leaf>
+        <leaf name="cburst">
+          <type name="int64"/>
+          <description>
+            <text>Amount of bytes that can be burst at ’infinite’ speed, in other words, as fast as the interface can transmit them. For perfect evening out, should be equal to at most one average packet. Should be at least as high as the highest cburst of all children.</text>
+          </description>
+        </leaf>
+        <list name="filter">
+          <key value="id"/>
+          <leaf name="id">
+            <type name="int32"/>
+            <description>
+              <text>Id of this filter.</text>
+            </description>
+            <mandatory value="true"/>
+          </leaf>
+          <leaf name="protocol">
+            <type name="string"/>
+            <description>
+              <text>Protocol of the packets to be matched.</text>
+            </description>
+          </leaf>
+          <leaf name="source">
+            <type name="string"/>
+            <description>
+              <text>Source ip address of the packets to be matched.</text>
+            </description>
+          </leaf>
+          <leaf name="destination">
+            <type name="string"/>
+            <description>
+              <text>Source ip address of the packets to be matched.</text>
+            </description>
+          </leaf>
+          <leaf name="sourcePort">
+            <type name="int16"/>
+            <description>
+              <text>Source port of the packets to be matched.</text>
+            </description>
+          </leaf>
+          <leaf name="destinationPort">
+            <type name="int16"/>
+            <description>
+              <text>Destination port of the packets to be matched.</text>
+            </description>
+          </leaf>
+          <leaf name="packetMark">
+            <type name="int16"/>
+            <description>
+              <text>Netfilter mark of the packets to be matched.</text>
+            </description>
+          </leaf>
+        </list>
+      </list>
+    </list>
+  </container>
+</module>

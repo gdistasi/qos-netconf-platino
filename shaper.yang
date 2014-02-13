@@ -1,0 +1,121 @@
+
+     
+     module shaper {
+         
+         namespace "http://www.comics.unina.it/nc/shaper";
+         
+         prefix "shaper";
+
+         organization "COMICS at Unina Inc.";
+         contact "comics@comics.unina.it";
+         description
+             "Module for configuring multiple qos classes on the egress queue of an interface of a Linux host.";
+
+         revision 2014-01-01 {
+             description "Initial revision.";
+         }
+         
+         
+	
+         container shaper {
+
+	    list qdisc {
+         
+	      key "interface";
+         
+	      leaf "interface" {
+		type "string";
+		description "Interface to which the qos shaping policy is applied.";
+		mandatory true;
+	      }
+         
+	      leaf "bandwidth" {
+		type int64;
+		description "Uplink bandwidth of the interface";
+		mandatory true;
+	      }
+         
+	  
+	      list class {
+	      
+		key "id";
+	      
+		leaf id {
+		  type int32;
+		  description "Id of the class.";
+		  mandatory true;
+		}
+	      
+		leaf prio {
+		  type int64;
+		  description "Priority of the class.";
+		}
+         
+		leaf rate {
+		  type int64;
+		  description " Maximum rate this class and all its children are guaranteed. Mandatory. ";
+		  mandatory true;
+		}
+	      
+		leaf ceil {
+		  type int64;
+		  description "Maximum rate at which a class can send, if its parent has bandwidth to spare. Defaults to the configured rate, which implies no borrowing." ;
+		}
+	      
+		leaf burst {
+		  type int64;
+		  description "Amount of bytes that can be burst at ceil speed, in excess of the configured rate. Should be at least as high as the highest burst of all children.";
+		}
+	      
+		leaf cburst {
+		  type int64;
+		  description "Amount of bytes that can be burst at ’infinite’ speed, in other words, as fast as the interface can transmit them. For perfect evening out, should be equal to at most one average packet. Should be at least as high as the highest cburst of all children.";
+		}
+	      
+	      
+		list filter {
+		  key id;
+	      
+		  leaf id {
+		    type int32;
+		    description "Id of this filter.";
+		    mandatory true;
+		  }
+	    
+		  leaf protocol {
+		    type string;
+		    description "Protocol of the packets to be matched.";
+		  }
+	      
+		  leaf source {
+		    type string;
+		    description "Source ip address of the packets to be matched.";
+		  }
+	      
+		  leaf destination {
+		    type string;
+		    description "Source ip address of the packets to be matched.";
+		  }
+	    
+		  leaf sourcePort {
+		    type int16;
+		    description "Source port of the packets to be matched.";
+		  }
+	      
+		  leaf destinationPort {
+		    type int16;
+		    description "Destination port of the packets to be matched.";
+		  }
+	      
+		  leaf packetMark {
+		    type int16;
+		    description "Netfilter mark of the packets to be matched.";
+		  }
+	   
+		}
+	      
+	      }
+	      
+	    }
+	}
+    }

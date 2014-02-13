@@ -1,0 +1,101 @@
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    <interface>eth3</interface>
+<rate>4000</rate>
+<class xmlns="http://www.comics.unina.it/nc/shaper">
+  <id>0</id>
+  <prio>1</prio>
+</class>
+</shaper>
+
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth3</interface>
+      <bandwidth>4000</bandwidth>
+    
+      <class><id>0</id><rate>222</rate><burst>22</burst></class>
+      <class><id>1</id><rate>222</rate><burst>22</burst> <filter><id>1</id><rate>222</rate></filter></class>
+      <class><id>3</id><rate>222</rate><burst>22</burst></class>
+      <class><id>4</id><rate>222</rate><burst>22</burst></class>
+
+    </qdisc>
+  
+</shaper>
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth3</interface>
+      <bandwidth>4000</bandwidth>
+    
+     </qdisc>
+  
+</shaper>
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth3</interface>
+      <bandwidth>4000</bandwidth>
+    
+          <class><id>0</id><rate>222</rate><burst>22</burst></class>
+
+    
+     </qdisc>
+     
+     
+  
+</shaper>
+
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth3</interface>
+      <bandwidth>4000</bandwidth>
+    
+      <class>
+	<id>0</id>
+	<rate>222</rate>
+	<burst>22</burst>
+      </class>
+      
+      <class>
+      
+        <id>1</id>
+        <rate>222</rate>
+        <burst>22</burst> 
+        
+        <filter>
+	  <id>1</id>
+	  <protocol>TCP</protocol>
+	</filter>
+      
+       <filter>
+	  <id>2</id>
+	  <protocol>UDP</protocol>
+	  <sourcePort>1040</sourcePort>
+	</filter>
+	
+	<filter>
+	  <id>3</id>
+	  <protocol>UDP</protocol>
+	  <sourcePort>1030</sourcePort>
+	</filter>
+	
+	  <filter>
+	  <id>4</id>
+	  <protocol>UDP</protocol>
+	  <sourcePort>1040</sourcePort>
+	</filter>
+      
+      </class>
+
+    
+     </qdisc>
+     
+     
+</shaper>
+
+

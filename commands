@@ -1,0 +1,32 @@
+#Comandi usati per creare il modulo transapi
+
+#si suppone che libnetconf sia già compilato ed installato (hint: per compilare libnetconf usare ./configure --with-examples --with-nacm-recovery-uid=0 che disattiva il sistema di controllo dei permessi per l'utente con id 0)
+
+
+#converte da yang a yin
+pyang shaper.yang -f yin > shaper.yin
+
+
+#crea uno stub di codice TRANSAPI
+lnctool  --name shaper --paths paths --model shaper.yin --template-dir template_dir/ --with-libxml2
+
+#
+sudo apt-get install libtool automake autoconf
+
+
+cd shaper
+
+#Modificare shaper.c per implementare le funzionalità richieste.
+
+#compilare il modulo
+autoreconf
+./configure
+make
+
+#installarlo
+sudo make install
+sudo cp shaper.yin /var/lib/libnetconf/server/
+
+# E' richiesta anche una modifica al main.c del server per caricare il modulo di shaper invece che dtoaster.spython2 ../libnetconf/lnctool/lnctool --model shaper.yang transapi --paths paths --template-dir template_dir/
+python2 ../libnetconf/lnctool/lnctool --model shaper.yang transapi --paths paths --template-dir template_dir/
+

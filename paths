@@ -1,0 +1,8 @@
+shaper=http://www.comics.unina.it/nc/shaper
+
+/shaper:shaper
+/shaper:shaper/shaper:qdisc
+/shaper:shaper/shaper:qdisc/shaper:class
+/shaper:shaper/shaper:qdisc/shaper:class/shaper:filter
+
+
