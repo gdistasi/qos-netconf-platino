@@ -34,7 +34,9 @@ void logTransapiOperation(void ** data, XMLDIFF_OP op, xmlNodePtr node, struct n
       
     nc_verb_verbose("xmlNode: %s", node->name);
     nc_verb_verbose("xmlNode first child name: %s", node->children->name);
-    nc_verb_verbose("xmlNode first child content: %s", (char*)node->children->last->content);
+    
+    if (node->children->last!=NULL)
+      nc_verb_verbose("xmlNode first child content: %s", (char*)node->children->last->content);
 
     
     nc_verb_verbose("xmlNode last child: %s", node->last->name);

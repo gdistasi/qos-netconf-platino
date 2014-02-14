@@ -52,7 +52,7 @@
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     
     <qdisc>
-      <interface>eth3</interface>
+      <interface>eth4</interface>
       <bandwidth>4000</bandwidth>
     
       <class>

@@ -2,13 +2,13 @@ TODO:
 
   Per nodo qdisc (funzione int callback_shaper_shaper_shaper_qdisc):
       ADD:
-	Salvare nome interfaccia e rate (parametri obbligatori). Instanziare qdisc HTB su interfaccia scelta
+	Salvare nome interfaccia e rate (parametri obbligatori). Instanziare qdisc HTB su interfaccia indicata.
       MOD:
-	Salvare eventuale cambio rate; cambio interfaccia non supportata (restituire errore).
+	Salvare eventuale cambio rate; cambio interfaccia equivale a cancellare vecchio qdisc e crearne uno nuovo (automatico).
       REM:
-	Rimuovere tutti i qdisc e filtri eventualmente installati sull'interfaccia
+	Rimuovere il qdisc e filtri installati sull'interfaccia
 
-  Per nodo class (funzione callback_shaper_shaper_class):
+  Per nodo class (funzione callback_shaper_shaper_qdisc_shaper_class):
       ADD:
 	Aggiungere nuova classe per la qdisc HTB
 	Verificare se la qdisc parent è già stata creata; se no crearla. Individuare in ogni caso l'interfaccia della qdisc.
@@ -17,7 +17,7 @@ TODO:
       MOD:
 	Cambiare attributi classe
 
-  Per nodo filter (funzione callback_shaper_shaper_class_filter):
+  Per nodo filter (funzione callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter):
       ADD:
 	aggiungere nuovo filtro da associare alla classe	
 	Verificare che la classe parent sia già stata creata. Se no crearla. In ogni caso risalire all'id della classe.
