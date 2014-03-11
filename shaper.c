@@ -11,13 +11,21 @@
 #include "utils.h"
 
 /* transAPI version which must be compatible with libnetconf */
-int transapi_version = 3;
+int transapi_version = 4;
 
 /* Signal to libnetconf that configuration data were modified by any callback.
  * 0 - data not modified
  * 1 - data have been modified
  */
 int config_modified = 0;
+
+/*
+ * Determines the callbacks order.
+ * Set this variable before compilation and DO NOT modify it in runtime.
+ * TRANSAPI_CLBCKS_LEAF_TO_ROOT (default)
+ * TRANSAPI_CLBCKS_ROOT_TO_LEAF
+ */
+const TRANSAPI_CLBCKS_ORDER_TYPE callbacks_order = TRANSAPI_CLBCKS_ORDER_DEFAULT;
 
 /* Do not modify or set! This variable is set by libnetconf to announce edit-config's error-option
 Feel free to use it to distinguish module behavior for different error-option values.
@@ -85,7 +93,7 @@ char * namespace_mapping[] = {"shaper", "http://www.comics.unina.it/nc/shaper", 
 */
 
 /**
- * @brief This callback will be run when node in path /shaper:shaper/shaper:qdisc/ changes
+ * @brief This callback will be run when node in path /shaper:shaper changes
  *
  * @param[in] data	Double pointer to void. Its passed to every callback. You can share data using it.
  * @param[in] op	Observed change in path. XMLDIFF_OP type.
@@ -102,7 +110,7 @@ int callback_shaper_shaper (void ** data, XMLDIFF_OP op, xmlNodePtr node, struct
 }
 
 /**
- * @brief This callback will be run when node in path /shaper:shaper/shaper:qdisc/ changes
+ * @brief This callback will be run when node in path /shaper:shaper/shaper:qdisc changes
  *
  * @param[in] data	Double pointer to void. Its passed to every callback. You can share data using it.
  * @param[in] op	Observed change in path. XMLDIFF_OP type.
@@ -161,7 +169,7 @@ struct transapi_data_callbacks clbks =  {
 	.callbacks_count = 4,
 	.data = NULL,
 	.callbacks = {
-  		{.path = "/shaper:shaper", .func = callback_shaper_shaper},
+		{.path = "/shaper:shaper", .func = callback_shaper_shaper},
 		{.path = "/shaper:shaper/shaper:qdisc", .func = callback_shaper_shaper_shaper_qdisc},
 		{.path = "/shaper:shaper/shaper:qdisc/shaper:class", .func = callback_shaper_shaper_shaper_qdisc_shaper_class},
 		{.path = "/shaper:shaper/shaper:qdisc/shaper:class/shaper:filter", .func = callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter}

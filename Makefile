@@ -16,12 +16,12 @@ CC = gcc
 INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
-LIBS = -lxml2 -lz -lm -ldl -lnetconf 
+LIBS = -L/usr/lib/x86_64-linux-gnu -lxml2 -lnetconf 
 CFLAGS = -I/usr/include/libxml2  -O3
 CPPFLAGS = -I../../../src 
 LIBTOOL = $(libtool) --tag=CC --quiet
 
-SRCS = shaper.c utils.c
+SRCS = shaper.c
 OBJDIR = .obj
 LOBJS = $(SRCS:%.c=$(OBJDIR)/%.lo)
 
