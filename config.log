@@ -107,7 +107,7 @@ configure:2940: checking for a BSD-compatible install
 configure:3008: result: /usr/bin/install -c
 configure:3030: checking for library containing ncds_apply_rpc
 configure:3061: gcc -o conftest  -O3   conftest.c  >&5
-/tmp/cc3UUUTl.o: In function `main':
+/tmp/ccDa9Omw.o: In function `main':
 conftest.c:(.text.startup+0x7): undefined reference to `ncds_apply_rpc'
 collect2: ld returned 1 exit status
 configure:3061: $? = 1

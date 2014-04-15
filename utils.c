@@ -6,7 +6,6 @@
 
 
 
-
 void logTransapiOperation(void ** data, XMLDIFF_OP op, xmlNodePtr node, struct nc_err** error){
   
     nc_verb_verbose("OPERATION:");

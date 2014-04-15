@@ -21,7 +21,7 @@ CFLAGS = -I/usr/include/libxml2  -O3
 CPPFLAGS = -I../../../src 
 LIBTOOL = $(libtool) --tag=CC --quiet
 
-SRCS = shaper.c
+SRCS = shaper.c utils.c
 OBJDIR = .obj
 LOBJS = $(SRCS:%.c=$(OBJDIR)/%.lo)
 

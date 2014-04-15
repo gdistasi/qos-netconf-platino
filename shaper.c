@@ -122,8 +122,50 @@ int callback_shaper_shaper (void ** data, XMLDIFF_OP op, xmlNodePtr node, struct
 /* !DO NOT ALTER FUNCTION SIGNATURE! */
 int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr node, struct nc_err** error)
 {
+
 	logTransapiOperation(data, op, node, error);
+	
+ 	switch(op){
+     
+      	case XMLDIFF_MOD:
+		nc_verb_verbose("MOD");
+		break;
+      	
+	case XMLDIFF_CHAIN:
+		nc_verb_verbose("CHAIN");
+		break;
+      	
+	case XMLDIFF_REM:
+		nc_verb_verbose("XMLDIFF_REM");
+		break;
+      	
+	case XMLDIFF_ADD:
+		nc_verb_verbose("Requested to add a qdisc.");
+			
+		char * rate=0;
+		char * ifn=0;	
+
+		ifn = (char*)node->children->last->content;
+		rate=(char*)node->last->last->content;
+
+		char cmd[512];
+		sprintf(cmd, "tc qdisc add dev %s root handle 1:0 htb rate %s", ifn, rate); 
+		nc_verb_verbose(cmd);
+		system(cmd);							
+						
+		
+	break;
+      		case XMLDIFF_NONE:
+		nc_verb_verbose("XMLDIFF_NONE");
+	break;
+      default: 
+	nc_verb_verbose("UNKNOWN OPERATION!");
+    }	
+			
+	
+	
 	return EXIT_SUCCESS;
+
 }
 
 /**
@@ -140,7 +182,48 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP op, xmlNodePtr node, struct nc_err** error)
 {
 	logTransapiOperation(data, op, node, error);
+
+ 	switch(op){
+     
+      	case XMLDIFF_MOD:
+		nc_verb_verbose("MOD");
+		break;
+      	
+	case XMLDIFF_CHAIN:
+		nc_verb_verbose("CHAIN");
+		break;
+      	
+	case XMLDIFF_REM:
+		nc_verb_verbose("XMLDIFF_REM");
+		break;
+      	
+	case XMLDIFF_ADD:
+		nc_verb_verbose("Requested to add a class.");
+			
+		
+		char * rate;
+		char * ceil;	
+		
+		rate = (char*)node->children->last->content;
+		ceil=(char*)node->last->last->content;
+		char cmd[512];
+		sprintf(cmd, "tc qclass add dev eth0 parent 1:0 classid 1:1 htb rate %s ceil %s ", rate, ceil); 
+		nc_verb_verbose(cmd);
+		system(cmd);							
+						
+		
+	break;
+      		case XMLDIFF_NONE:
+		nc_verb_verbose("XMLDIFF_NONE");
+	break;
+      default: 
+	nc_verb_verbose("UNKNOWN OPERATION!");
+    }	
+			
+	
+	
 	return EXIT_SUCCESS;
+
 }
 
 /**
@@ -157,9 +240,49 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data, XMLDIFF_OP op, xmlNodePtr node, struct nc_err** error)
 {
 	logTransapiOperation(data, op, node, error);
-	return EXIT_SUCCESS;
-}
 
+ 	switch(op){
+     
+      	case XMLDIFF_MOD:
+		nc_verb_verbose("MOD");
+		break;
+      	
+	case XMLDIFF_CHAIN:
+		nc_verb_verbose("CHAIN");
+		break;
+      	
+	case XMLDIFF_REM:
+		nc_verb_verbose("XMLDIFF_REM");
+		break;
+      	
+	case XMLDIFF_ADD:
+		nc_verb_verbose("Requested to add a filter.");
+			
+		char * rate;
+		char * sourceport;	
+
+		rate = (char*)node->children->last->content;
+		sourceport=(char*)node->last->last->content;
+
+		char cmd[512];
+		sprintf(cmd, "tc filter add dev eth0 parent 1:0 protocol ip prio 1 u32 rate %s match ip sport %s", rate, sourceport); 
+		nc_verb_verbose(cmd);
+		system(cmd);							
+						
+		
+	break;
+      		case XMLDIFF_NONE:
+		nc_verb_verbose("XMLDIFF_NONE");
+	break;
+      default: 
+	nc_verb_verbose("UNKNOWN OPERATION!");
+    }	
+			
+	
+	
+	return EXIT_SUCCESS;
+
+}
 /*
 * Structure transapi_config_callbacks provide mapping between callback and path in configuration datastore.
 * It is used by libnetconf library to decide which callbacks will be run.
