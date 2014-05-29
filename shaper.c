@@ -142,14 +142,14 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 	case XMLDIFF_ADD:
 		nc_verb_verbose("Requested to add a qdisc.");
 			
-		char * rate=0;
-		char * ifn=0;	
+		char * ifn=0;
+			
 
-		ifn = (char*)node->children->last->content;
-		rate=(char*)node->last->last->content;
+		ifn = getChildContent(node, "interface");
+		
 
 		char cmd[512];
-		sprintf(cmd, "tc qdisc add dev %s root handle 1:0 htb rate %s", ifn, rate); 
+		sprintf(cmd, "tc qdisc add dev %s root handle 1:0 htb", ifn); 
 		nc_verb_verbose(cmd);
 		system(cmd);							
 						
@@ -201,13 +201,21 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		nc_verb_verbose("Requested to add a class.");
 			
 		
-		char * rate;
-		char * ceil;	
+		char * id=0;
+		char * prio=0;		
+		char * rate=0;
+		char * ceil=0;
+		char * brust=0;	
+
+		id = getChildContent(node, "id");
+		prio = getChildContent(node, "prio");
+		rate = getChildContent(node, "rate");
+		ceil = getChildContent(node, "ceil");
+		brust = getChildContent(node, "brust");
 		
-		rate = (char*)node->children->last->content;
-		ceil=(char*)node->last->last->content;
+		
 		char cmd[512];
-		sprintf(cmd, "tc qclass add dev eth0 parent 1:0 classid 1:1 htb rate %s ceil %s ", rate, ceil); 
+		sprintf(cmd, "tc qclass add dev eth0 parent 1:0 classid 1: %s prio %s htb rate %s ceil %s brust %s ",id, prio, rate, ceil, brust); 
 		nc_verb_verbose(cmd);
 		system(cmd);							
 						
@@ -258,14 +266,24 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 	case XMLDIFF_ADD:
 		nc_verb_verbose("Requested to add a filter.");
 			
-		char * rate;
-		char * sourceport;	
+		char * id;
+		char * protocol;	
+		char * source=0;
+		char * destination=0;		
+		char * sport=0;
+		char * dport=0;
+		char * pmark=0;	
 
-		rate = (char*)node->children->last->content;
-		sourceport=(char*)node->last->last->content;
-
+		id = getChildContent(node, "id");
+		protocol = getChildContent(node, "potocol");
+		source = getChildContent(node, "source");
+		destination = getChildContent(node, "destination");
+		sport = getChildContent(node, "sourceport");
+		dport = getChildContent(node, "destinationport");
+		pmark = getChildContent(node, "packetmark");
+		
 		char cmd[512];
-		sprintf(cmd, "tc filter add dev eth0 parent 1:0 protocol ip prio 1 u32 rate %s match ip sport %s", rate, sourceport); 
+		sprintf(cmd, "tc filter add dev eth0 parent 1:0 protocol %s prio 1 u32 source %s destination %s match ip sport %s dport %s packetmark %s", id, protocol, source, destination, sport, dport, pmark); 
 		nc_verb_verbose(cmd);
 		system(cmd);							
 						

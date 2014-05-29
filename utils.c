@@ -7,7 +7,7 @@
 
 
 void logTransapiOperation(void ** data, XMLDIFF_OP op, xmlNodePtr node, struct nc_err** error){
-  
+ 
     nc_verb_verbose("OPERATION:");
     
     switch(op){
@@ -34,18 +34,67 @@ void logTransapiOperation(void ** data, XMLDIFF_OP op, xmlNodePtr node, struct n
     nc_verb_verbose("xmlNode: %s", node->name);
     nc_verb_verbose("xmlNode first child name: %s", node->children->name);
     
-    if (node->children->last!=NULL)
-      nc_verb_verbose("xmlNode first child content: %s", (char*)node->children->last->content);
 
-    
-    nc_verb_verbose("xmlNode last child: %s", node->last->name);
-    if (node->parent!=NULL){
-      nc_verb_verbose("xmlNode parent: %s", node->parent->name);
-    } else {
-      nc_verb_verbose("xmlNode NOPARENT");
-    }
-    
-    
+    if (node->children->last!=NULL)	{
+      nc_verb_verbose("xmlNode first child content: %s", (char*)node->children->last->content);
+      nc_verb_verbose("xmlNode last child: %s", node->last->name);
+   					}
+    if (node->parent!=NULL)	{
+      			nc_verb_verbose("xmlNode parent: %s", node->parent->name);
+    				} 
+	else 
+	{
+      		nc_verb_verbose("xmlNode NOPARENT");
+    	}
+
+
     return;
   
 }
+
+char* getChildContent(xmlNode *father, char *childName)
+{
+	int maxLenght=512;
+	char*result=malloc(maxLenght);
+	result[0]='\0';
+
+xmlNode*node=father->children;
+
+	if (strcmp((char*)node->name, childName)==0)
+		{
+		strncpy(result, (char*)node->last->content, maxLenght);
+		}
+
+ else
+		{
+		while ((node=node->next)!=0)
+		{
+
+			if (strcmp((char*)node->name, childName)==0)
+			{
+			strncpy(result, (char*)node->last->content, maxLenght);
+			break;
+			}
+		
+		}
+
+		
+		}
+return result;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

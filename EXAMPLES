@@ -1,6 +1,7 @@
+*/CREAZIONE DI UNA CLASSE */
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     <interface>eth3</interface>
-<rate>4000</rate>
+	<rate>4000</rate>
 <class xmlns="http://www.comics.unina.it/nc/shaper">
   <id>0</id>
   <prio>1</prio>
@@ -8,21 +9,7 @@
 </shaper>
 
 
-<shaper xmlns="http://www.comics.unina.it/nc/shaper">
-    
-    <qdisc>
-      <interface>eth3</interface>
-      <bandwidth>4000</bandwidth>
-    
-      <class><id>0</id><rate>222</rate><burst>22</burst></class>
-      <class><id>1</id><rate>222</rate><burst>22</burst> <filter><id>1</id><rate>222</rate></filter></class>
-      <class><id>3</id><rate>222</rate><burst>22</burst></class>
-      <class><id>4</id><rate>222</rate><burst>22</burst></class>
-
-    </qdisc>
-  
-</shaper>
-
+*/CREAZIONE DI UNA QDISC
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     
     <qdisc>
@@ -33,10 +20,12 @@
   
 </shaper>
 
+*/CREAZIONE DI UNA QDISC E UNA CLASSE
+
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     
     <qdisc>
-      <interface>eth3</interface>
+      <interface>eth0</interface>
       <bandwidth>4000</bandwidth>
     
           <class><id>0</id><rate>222</rate><burst>22</burst></class>
@@ -48,6 +37,111 @@
   
 </shaper>
 
+
+*/CREAZIONE QDISC E CLASSI 
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth0</interface>
+      <bandwidth>4000</bandwidth>
+    
+      <class><id>0</id><rate>222</rate><burst>22</burst></class>
+      <class><id>1</id><rate>222</rate><burst>22</burst> <filter><id>1</id><rate>222</rate></filter></class>
+      <class><id>3</id><rate>222</rate><burst>22</burst></class>
+      <class><id>4</id><rate>222</rate><burst>22</burst></class>
+
+    </qdisc>
+  
+</shaper>
+
+
+
+/*creo una qdisc la cui disciplina di coda htb è riferita all’interfaccia eth0, ed ha come parametro “handle” 1. Successivamente.
+La prima riga crea una classe root sotto la qdisc 1:, questo significa che ha una qdisc htb uguale a quella della classe “padre”. La classe root creata permette ai figli creati di “prendere in prestito” gli uni dagli altri, ma la classe rotte non può prendere in prestito da nessuno. Per evitare che la larghezza di banda in eccesso non potesse essere utilizzata da nessuno, creo altre 3 classi: in questo caso creo una classe come radice (root) e altre classi successive.
+
+shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth0</interface>
+          
+      <class>
+       <id>0</id>
+       <prio>1</prio>
+       <rate>100</rate>
+       <ceil>100</ceil>
+       <burst>22</burst>
+       </class>
+       
+       <class>
+       <id>1</id>
+<prio>1</prio>
+<rate>30</rate>
+<ceil>100</ceil>
+<burst>22</burst>
+       </class>
+
+       <class>
+       <id>2</id>
+       <prio>1</prio>
+       <rate>10</rate>
+       <ceil>100</ceil>
+       <burst>22</burst>
+       </class>
+       
+       <class>
+       <id>3</id>
+<prio>1</prio>
+<rate>60</rate>
+<ceil>100</ceil>
+<burst>22</burst>
+       </class>
+       
+    </qdisc>
+  
+</shaper>
+
+
+
+
+/*Come prima solo che modifico anche il valore del ceil e della priorità:
+
+shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth0</interface>
+          
+      <class><id>0</id><prio>1</prio><rate>125</rate><ceil>100</ceil</class>
+<class><id>10</id><prio>2</prio><rate>512</rate><ceil>25</ceil</class>
+<class><id>11</id><prio>10</prio><rate>1</rate><ceil>0.5</ceil></class>
+<class><id>12</id><prio>0</prio><rate>6</rate><ceil>25</ceil></class>
+    </qdisc>
+  
+</shaper>
+
+*/CREAZIONE DISCIPLINA DI CODA CON UNA CLASSE E UN FILTRO
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth0</interface>
+      
+    	<class>
+       <id>0</id>
+       <prio>1</prio>
+       <rate>100</rate>
+       <ceil>100</ceil>
+       <burst>22</burst>
+
+       <filter>
+	  <id>1</id>
+	  <protocol>IP</protocol>
+	  <sourcePort>1040</sourcePort>
+	  <sport>22</sport>
+	</filter>
+      
+       
+*/CREAZIONE DISCIPLINA DI CODA CON CLASSE E FILTRI
 
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     
@@ -97,5 +191,79 @@
      
      
 </shaper>
+
+*/CREAZIONE DISCIPLINA DI CODA CON CLASSE E FILTRI collegati direttamente alla root
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth0</interface>
+      
+      <class>
+		<id>0</id>
+		<rate>222</rate>
+		<burst>22</burst>
+      </class>
+      
+      <class>
+      
+        <id>1</id>
+        <rate>222</rate>
+        <burst>22</burst> 
+        
+        <filter>
+	  <id>1</id>
+	  <protocol>IP<protocol>
+	  <sport>80<sport>
+	
+	  
+	</filter>
+      
+      </class>
+
+    
+     </qdisc>
+     
+     
+</shaper>
+
+
+
+*/CREAZIONE DISCIPLINA DI CODA CON CLASSE E FILTRI 
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth0</interface>
+      
+      <class>
+		<id>0</id>
+		<rate>100</rate>
+      </class>
+      
+      <class>
+      
+        <id>1</id>
+        <rate>100</rate>
+        <burst>22</burst> 
+        
+        <filter>
+	  <id>1</id>
+	  <protocol>IP</protocol>
+	  <souce>143.225.229.56</source>
+	  <sport>80<sport>
+	  <pm>251</pm>
+	
+	  
+	</filter>
+      
+      </class>
+
+    
+     </qdisc>
+     
+     
+</shaper>
+
 
 
