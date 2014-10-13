@@ -1,0 +1,21 @@
+
+
+
+
+Le API disponibili sono le seguenti:
+
+1) connect
+  Descrizione: Usata per indicare al componente quale router si vuole configurare
+  Parametri: utente e host
+
+  
+2) edit-config
+  Descrizione: Usata per configurare i flussi sul router al quale ci si è collegati.
+  Parametri: configurazione dei flussi da allocare in formato XML secondo lo schema shaper.yin.
+  Una nuova configurazione può essere passata che annulla la precedente.
+  L'applicazione di una nuova configurazione tiene conto della configurazione corrente per cui è applicata molto velocemente.
+  
+Non è presente una api per indicare il path di un flusso. Non è compito del componente avere visione dei percorsi i quali possono essere soggetti a cambiamenti nel tempo (fallimento di un nodo di uno dei percorsi configurati).
+E' compito del componente che definisce i percorsi istruire opportunamente il componente MIO su come modificare i singoli router coinvolti.
+
+

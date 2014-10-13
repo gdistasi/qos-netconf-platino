@@ -16,7 +16,7 @@ CC = gcc
 INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
-LIBS = -L/usr/lib/x86_64-linux-gnu -lxml2 -lnetconf 
+LIBS = -L/usr/lib -lxml2 -lnetconf 
 CFLAGS = -I/usr/include/libxml2  -O3
 CPPFLAGS = -I../../../src 
 LIBTOOL = $(libtool) --tag=CC --quiet

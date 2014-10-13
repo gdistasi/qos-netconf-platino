@@ -1,12 +1,3 @@
-*/CREAZIONE DI UNA CLASSE */
-<shaper xmlns="http://www.comics.unina.it/nc/shaper">
-    <interface>eth3</interface>
-	<rate>4000</rate>
-<class xmlns="http://www.comics.unina.it/nc/shaper">
-  <id>0</id>
-  <prio>1</prio>
-</class>
-</shaper>
 
 
 */CREAZIONE DI UNA QDISC
@@ -20,41 +11,62 @@
   
 </shaper>
 
-*/CREAZIONE DI UNA QDISC E UNA CLASSE
 
+*/CREAZIONE DI UNA CLASSE
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     
     <qdisc>
       <interface>eth0</interface>
-      <bandwidth>4000</bandwidth>
-    
-          <class><id>0</id><rate>222</rate><burst>22</burst></class>
-
-    
+          <class><id>10</id><rate>1000</rate><ceil>2000</ceil></class>
      </qdisc>
      
-     
-  
 </shaper>
 
 
-*/CREAZIONE QDISC E CLASSI 
-
+/* Creazione seconda classe */
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     
     <qdisc>
       <interface>eth0</interface>
-      <bandwidth>4000</bandwidth>
-    
-      <class><id>0</id><rate>222</rate><burst>22</burst></class>
-      <class><id>1</id><rate>222</rate><burst>22</burst> <filter><id>1</id><rate>222</rate></filter></class>
-      <class><id>3</id><rate>222</rate><burst>22</burst></class>
-      <class><id>4</id><rate>222</rate><burst>22</burst></class>
-
-    </qdisc>
-  
+          <class><id>11</id><rate>3000</rate><ceil>4000</ceil></class>
+     </qdisc>
+     
 </shaper>
 
+
+/* CREAZIONE FILTRO */
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    
+    <qdisc>
+      <interface>eth0</interface>
+          <class><id>11</id>   
+	    
+	    <filter> 
+		<id>16</id>        
+		<protocol>0</protocol>
+		<sourcePort>1040</sourcePort>
+		<destinationPort>2000</destinationPort>
+	    </filter>
+       
+	   </class>
+     </qdisc>
+     
+</shaper>
+
+
+/* ALL IN ONE */
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+    <qdisc>
+      <interface>eth0</interface>
+      <bandwidth>4000</bandwidth>
+      <class>	  
+	  <id>11</id>
+	  <rate>3000</rate>
+	  <ceil>4000</ceil>   
+	  <filter><id>16</id><protocol>0</protocol><sourcePort>1040</sourcePort><destinationPort>2000</destinationPort></filter>
+      </class>
+    </qdisc>
+</shaper>
 
 
 /*creo una qdisc la cui disciplina di coda htb è riferita all’interfaccia eth0, ed ha come parametro “handle” 1. Successivamente.

@@ -109,6 +109,7 @@ int callback_shaper_shaper (void ** data, XMLDIFF_OP op, xmlNodePtr node, struct
 	return EXIT_SUCCESS;
 }
 
+
 /**
  * @brief This callback will be run when node in path /shaper:shaper/shaper:qdisc changes
  *
@@ -125,47 +126,40 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 
 	logTransapiOperation(data, op, node, error);
 	
- 	switch(op){
-     
-      	case XMLDIFF_MOD:
-		nc_verb_verbose("MOD");
-		break;
-      	
-	case XMLDIFF_CHAIN:
-		nc_verb_verbose("CHAIN");
-		break;
-      	
-	case XMLDIFF_REM:
-		nc_verb_verbose("XMLDIFF_REM");
-		break;
-      	
-	case XMLDIFF_ADD:
+ 	if (op & XMLDIFF_ADD){
 		nc_verb_verbose("Requested to add a qdisc.");
 			
 		char * ifn=0;
-			
+		char * bandwidth=0;	
 
 		ifn = getChildContent(node, "interface");
+		bandwidth = getChildContent(node, "bandwidth");
 		
-
 		char cmd[512];
-		sprintf(cmd, "tc qdisc add dev %s root handle 1:0 htb", ifn); 
-		nc_verb_verbose(cmd);
-		system(cmd);							
-						
-		
-	break;
-      		case XMLDIFF_NONE:
-		nc_verb_verbose("XMLDIFF_NONE");
-	break;
-      default: 
-	nc_verb_verbose("UNKNOWN OPERATION!");
-    }	
-			
-	
-	
-	return EXIT_SUCCESS;
 
+		/* commands are enqueue in reverse order */
+		/* define default class for non classified packetes */
+		sprintf(cmd, "tc class add dev %s parent 1: classid 1:100 htb rate 10kbit ceil %skbit", ifn, bandwidth);
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);
+		
+		/* define bandwidth for the interface */
+		sprintf(cmd, "tc class add dev %s parent 1: classid 1:1 htb rate %skbit ceil %skbit", ifn, bandwidth, bandwidth);
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);
+		
+		/* install htb traffic shaper */
+		sprintf(cmd, "tc qdisc add dev %s root handle 1:0 htb default 100", ifn); 
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);
+		
+	}	
+	
+	/* exec all the enqueued commands in reverse order */
+	exec_commands();
+			
+	return EXIT_SUCCESS;
+	
 }
 
 /**
@@ -183,56 +177,55 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 {
 	logTransapiOperation(data, op, node, error);
 
- 	switch(op){
-     
-      	case XMLDIFF_MOD:
-		nc_verb_verbose("MOD");
-		break;
-      	
-	case XMLDIFF_CHAIN:
-		nc_verb_verbose("CHAIN");
-		break;
-      	
-	case XMLDIFF_REM:
-		nc_verb_verbose("XMLDIFF_REM");
-		break;
-      	
-	case XMLDIFF_ADD:
+	if (op & XMLDIFF_ADD){
+	  
 		nc_verb_verbose("Requested to add a class.");
-			
-		
+				
 		char * id=0;
 		char * prio=0;		
 		char * rate=0;
 		char * ceil=0;
-		char * brust=0;	
+		char * burst=0;	
+		char * ifn=0;
 
 		id = getChildContent(node, "id");
 		prio = getChildContent(node, "prio");
 		rate = getChildContent(node, "rate");
 		ceil = getChildContent(node, "ceil");
-		brust = getChildContent(node, "brust");
-		
+		burst = getChildContent(node, "burst");
+		ifn = getChildContent(node->parent, "interface");
 		
 		char cmd[512];
-		sprintf(cmd, "tc qclass add dev eth0 parent 1:0 classid 1: %s prio %s htb rate %s ceil %s brust %s ",id, prio, rate, ceil, brust); 
-		nc_verb_verbose(cmd);
-		system(cmd);							
-						
+		sprintf(cmd, "tc class add dev %s parent 1:1 classid 1:%s %s htb rate %skbit ceil %skbit ",ifn, id, prio, rate, ceil); 
 		
-	break;
-      		case XMLDIFF_NONE:
-		nc_verb_verbose("XMLDIFF_NONE");
-	break;
-      default: 
-	nc_verb_verbose("UNKNOWN OPERATION!");
-    }	
-			
-	
-	
+		
+		char temp[512];		
+		if (burst!=0 && strlen(burst) > 0){
+		  sprintf(temp, " burst %s", burst);
+		  strcat(cmd, temp);
+		}
+		
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);							
+						
+	}	
+				
 	return EXIT_SUCCESS;
 
 }
+
+
+void AddIfNotEmpty(char * cmd, char * key, char * value, char * trailer){
+  
+ 	char temp[512];		
+	
+	if (value!=0 && strlen(value) > 0){
+	  sprintf(temp, " %s %s%s",key, value,trailer);
+	  strcat(cmd, temp);
+	}
+    
+}
+
 
 /**
  * @brief This callback will be run when node in path /shaper:shaper/shaper:qdisc/shaper:class/shaper:filter changes
@@ -249,21 +242,8 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 {
 	logTransapiOperation(data, op, node, error);
 
- 	switch(op){
-     
-      	case XMLDIFF_MOD:
-		nc_verb_verbose("MOD");
-		break;
-      	
-	case XMLDIFF_CHAIN:
-		nc_verb_verbose("CHAIN");
-		break;
-      	
-	case XMLDIFF_REM:
-		nc_verb_verbose("XMLDIFF_REM");
-		break;
-      	
-	case XMLDIFF_ADD:
+	/* Filter node added */
+	if (op & XMLDIFF_ADD){
 		nc_verb_verbose("Requested to add a filter.");
 			
 		char * id;
@@ -273,31 +253,40 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		char * sport=0;
 		char * dport=0;
 		char * pmark=0;	
-
+		
+		char * classid=0;
+		char * ifn=0;
+		
 		id = getChildContent(node, "id");
-		protocol = getChildContent(node, "potocol");
+		protocol = getChildContent(node, "protocol");
 		source = getChildContent(node, "source");
 		destination = getChildContent(node, "destination");
-		sport = getChildContent(node, "sourceport");
-		dport = getChildContent(node, "destinationport");
-		pmark = getChildContent(node, "packetmark");
+		sport = getChildContent(node, "sourcePort");
+		dport = getChildContent(node, "destinationPort");
+		pmark = getChildContent(node, "packetMark");
+		
+		ifn = getChildContent(node->parent->parent, "interface");
+		classid = getChildContent(node->parent, "id");
 		
 		char cmd[512];
-		sprintf(cmd, "tc filter add dev eth0 parent 1:0 protocol %s prio 1 u32 source %s destination %s match ip sport %s dport %s packetmark %s", id, protocol, source, destination, sport, dport, pmark); 
-		nc_verb_verbose(cmd);
-		system(cmd);							
-						
+		sprintf(cmd, "tc filter add dev %s parent 1: protocol ip prio 1 u32 ", ifn); 
 		
-	break;
-      		case XMLDIFF_NONE:
-		nc_verb_verbose("XMLDIFF_NONE");
-	break;
-      default: 
-	nc_verb_verbose("UNKNOWN OPERATION!");
-    }	
-			
+		AddIfNotEmpty(cmd, "match ip protocol", protocol, " 0xff");
+		AddIfNotEmpty(cmd, "match ip sport", sport, " 0xffff");
+		AddIfNotEmpty(cmd, "match ip dport", dport, " 0xffff");
+		AddIfNotEmpty(cmd, "match ip src", source, "");
+		AddIfNotEmpty(cmd, "match ip dst", destination, "");
+		AddIfNotEmpty(cmd, "match pmark", pmark, "");
+		
+		
+		strcat(cmd, " flowid 1:");
+		strcat(cmd, classid);
+		
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);							
+	}
 	
-	
+    	
 	return EXIT_SUCCESS;
 
 }
