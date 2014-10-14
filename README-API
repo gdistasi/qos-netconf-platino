@@ -18,4 +18,6 @@ Le API disponibili sono le seguenti:
 Non è presente una api per indicare il path di un flusso. Non è compito del componente avere visione dei percorsi i quali possono essere soggetti a cambiamenti nel tempo (fallimento di un nodo di uno dei percorsi configurati).
 E' compito del componente che definisce i percorsi istruire opportunamente il componente MIO su come modificare i singoli router coinvolti.
 
+1)Un altro vantaggio di questo approccio è la maggiore flessibilità. I nodi non vengono configurati in termini di flussi, ma in termini di classi e filtri, che consente di definire anche aggregati di pacchetti ai quali viene garantita una certa banda complessiva.
 
+2) Il MIO componente rimane semplice e neanche l'altro componente si complica. Contestualmente alla configurazione delle tabelle di routing sui nodi, l'ALTRO componente deve anche configurare la banda.
