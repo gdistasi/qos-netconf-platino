@@ -14,8 +14,6 @@
          revision 2014-01-01 {
              description "Initial revision.";
          }
-         
-         
 	
          container shaper {
 
@@ -31,7 +29,7 @@
          
 	      leaf "bandwidth" {
 		type int64;
-		description "Uplink bandwidth of the interface";
+		description "Uplink bandwidth of the interface in kbit/s";
 		mandatory true;
 	      }
          
@@ -42,7 +40,7 @@
 	      
 		leaf id {
 		  type int32;
-		  description "Id of the class.";
+		  description "Id (a number greater than 10) of the class.";
 		  mandatory true;
 		}
 	      
@@ -53,13 +51,14 @@
          
 		leaf rate {
 		  type int64;
-		  description " Maximum rate this class and all its children are guaranteed. Mandatory. ";
+		  description " Maximum rate this class and all its children are guaranteed in kbit/s. Mandatory. ";
 		  mandatory true;
 		}
 	      
 		leaf ceil {
 		  type int64;
-		  description "Maximum rate at which a class can send, if its parent has bandwidth to spare. Defaults to the configured rate, which implies no borrowing." ;
+		  description "Maximum rate at which a class can send (in kbit/s), if its parent has bandwidth to spare. Defaults to the configured rate, which implies no borrowing." ;
+		  mandatory true;
 		}
 	      
 		leaf burst {
@@ -78,13 +77,13 @@
 	      
 		  leaf id {
 		    type int32;
-		    description "Id of this filter.";
+		    description "Id (a number greater than 10) of this filter.";
 		    mandatory true;
 		  }
 	    
 		  leaf protocol {
 		    type string;
-		    description "Protocol of the packets to be matched.";
+		    description "Protocol number of the packets to be matched (e.g. 0 for UDP, 6 for TCP)";
 		  }
 	      
 		  leaf source {

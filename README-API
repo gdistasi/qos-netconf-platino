@@ -1,23 +1,105 @@
 
+Il protocollo per la comunicazione con il componente PDP è testuale e funziona su un meccanismo richiesta/risposta (client/server).
+
+I messaggi di richiesta (API disponibili) sono i seguenti:
 
 
-
-Le API disponibili sono le seguenti:
-
-1) connect
-  Descrizione: Usata per indicare al componente quale router si vuole configurare
-  Parametri: utente e host
-
+1) connect host
+   Descrizione: Usata per indicare al componente PDP il router da configurare
+   Opzione (host): nome o indirizzo ip del nodo che si trova sul percorso da configurare (non necessariamente l'indirizzo dell'interfaccia sul quale si riserva la banda, ma un indirizzo ip attraverso il quale il nodo è raggiungibile (es. indirizzo su rete di controllo)
+	   
+2) edit-config running|candidate  
+   configurazione_in_XML <EOF>
+   Descrizione: Usata per configurare l'utilizzo della banda sul router.
+   Parametri: 1) profilo sul quale applicare la configurazione (running o candidate). 
+	      2) configurazione della banda in formato XML secondo lo schema shaper.yin (distribuito insieme a questo README).
+   Note: <EOF> qui (e di seguito) indica il carattere di end-of-file
   
-2) edit-config
-  Descrizione: Usata per configurare i flussi sul router al quale ci si è collegati.
-  Parametri: configurazione dei flussi da allocare in formato XML secondo lo schema shaper.yin.
-  Una nuova configurazione può essere passata che annulla la precedente.
-  L'applicazione di una nuova configurazione tiene conto della configurazione corrente per cui è applicata molto velocemente.
+3) disconnect
+   Descrizione: Usata quando si è completata la configurazione di un nodo prima di passare al nodo successivo.
+   Nessun parametro.
+   
+A seguito di ciascuna chiamata si riceve risposta OK oppure un'indicazione del codice di errore.
+ 
   
-Non è presente una api per indicare il path di un flusso. Non è compito del componente avere visione dei percorsi i quali possono essere soggetti a cambiamenti nel tempo (fallimento di un nodo di uno dei percorsi configurati).
-E' compito del componente che definisce i percorsi istruire opportunamente il componente MIO su come modificare i singoli router coinvolti.
+Caso d'uso (esempio): riservare per un flusso TCP su percorso 10.10.1.1 <-> 10.10.1.2 <-> 10.10.1.3 la banda di 1 Mbit/s.
+((>> messaggi inviati al componente, << messaggi ricevuti in risposta)
 
-1)Un altro vantaggio di questo approccio è la maggiore flessibilità. I nodi non vengono configurati in termini di flussi, ma in termini di classi e filtri, che consente di definire anche aggregati di pacchetti ai quali viene garantita una certa banda complessiva.
+>> connect 10.10.1.1
+<< OK
+>> edit-config running
+   <shaper xmlns="http://www.comics.unina.it/nc/shaper">
+   <qdisc>
+      <interface>eth0</interface>
+      <bandwidth>10000</bandwidth>
+	      <class>	  
+		  <id>11</id>
+		  <rate>1000</rate>
+		  <ceil>10000</ceil>   
+		  <filter>
+		    <id>11</id>
+		    <protocol>6</protocol>
+		    <source>10.10.1.1</sourcePort>
+		    <destination>10.10.1.3</destination>
+		  </filter>
+	      </class>
+	</qdisc>
+</shaper> <EOF>
+<< OK
+>> disconnect
+<< OK
+>> connect 10.10.1.2
+<< OK
+>> edit-config running
+   <shaper xmlns="http://www.comics.unina.it/nc/shaper">
+   <qdisc>
+      <interface>eth0</interface>
+      <bandwidth>10000</bandwidth>
+	      <class>	  
+		  <id>11</id>
+		  <rate>1000</rate>
+		  <ceil>10000</ceil>   
+		  <filter>
+		    <id>11</id>
+		    <protocol>6</protocol>
+		    <source>10.10.1.1</sourcePort>
+		    <destination>10.10.1.3</destination>
+		  </filter>
+	      </class>
+	</qdisc>
+    </shaper> <EOF>
+<< OK
+>> disconnect
+>> connect 10.10.1.3
+<< OK
+>> edit-config running
+   <shaper xmlns="http://www.comics.unina.it/nc/shaper">
+   <qdisc>
+      <interface>eth0</interface>
+      <bandwidth>10000</bandwidth>
+	      <class>	  
+		  <id>11</id>
+		  <rate>1000</rate>
+		  <ceil>10000</ceil>   
+		  <filter>
+		    <id>11</id>
+		    <protocol>6</protocol>
+		    <source>10.10.1.1</sourcePort>
+		    <destination>10.10.1.3</destination>
+		  </filter>
+	      </class>
+	</qdisc>
+    </shaper> <EOF>
+<< OK
+>> disconnect
+<< OK
 
-2) Il MIO componente rimane semplice e neanche l'altro componente si complica. Contestualmente alla configurazione delle tabelle di routing sui nodi, l'ALTRO componente deve anche configurare la banda.
+
+Note:
+
+1) Il componente chiamante (il Resource Manager?) deve essere a conoscenza ovviamente del percorso ma anche dei nomi delle interfacce effettivamente attraversate dal flusso e della relativa capacità (si ricorda che l'indirizzo IP da specificare come opzione della connect è un indirizzo genericamente di controllo per il nodo).
+Nell'esempio si è supposto che l'interfaccia attraversata sia sempre eth0 e che la banda relativa sia di 10 Mbit/s (in accordo con il fatto che, come da schema XSL distribuito con questo README, i valori sono espressi in kbit/s).
+
+
+ 
+  

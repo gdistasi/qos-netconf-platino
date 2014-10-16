@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module xmlns="urn:ietf:params:xml:ns:yang:yin:1" xmlns:shaper="http://www.comics.unina.it/nc/shaper" name="shaper">
+<module name="shaper"
+        xmlns="urn:ietf:params:xml:ns:yang:yin:1"
+        xmlns:shaper="http://www.comics.unina.it/nc/shaper">
   <namespace uri="http://www.comics.unina.it/nc/shaper"/>
   <prefix value="shaper"/>
   <organization>
@@ -29,7 +31,7 @@
       <leaf name="bandwidth">
         <type name="int64"/>
         <description>
-          <text>Uplink bandwidth of the interface</text>
+          <text>Uplink bandwidth of the interface in kbit/s</text>
         </description>
         <mandatory value="true"/>
       </leaf>
@@ -38,7 +40,7 @@
         <leaf name="id">
           <type name="int32"/>
           <description>
-            <text>Id of the class.</text>
+            <text>Id (a number greater than 10) of the class.</text>
           </description>
           <mandatory value="true"/>
         </leaf>
@@ -51,15 +53,16 @@
         <leaf name="rate">
           <type name="int64"/>
           <description>
-            <text> Maximum rate this class and all its children are guaranteed. Mandatory. </text>
+            <text> Maximum rate this class and all its children are guaranteed in kbit/s. Mandatory. </text>
           </description>
           <mandatory value="true"/>
         </leaf>
         <leaf name="ceil">
           <type name="int64"/>
           <description>
-            <text>Maximum rate at which a class can send, if its parent has bandwidth to spare. Defaults to the configured rate, which implies no borrowing.</text>
+            <text>Maximum rate at which a class can send (in kbit/s), if its parent has bandwidth to spare. Defaults to the configured rate, which implies no borrowing.</text>
           </description>
+          <mandatory value="true"/>
         </leaf>
         <leaf name="burst">
           <type name="int64"/>
@@ -78,14 +81,14 @@
           <leaf name="id">
             <type name="int32"/>
             <description>
-              <text>Id of this filter.</text>
+              <text>Id (a number greater than 10) of this filter.</text>
             </description>
             <mandatory value="true"/>
           </leaf>
           <leaf name="protocol">
             <type name="string"/>
             <description>
-              <text>Protocol of the packets to be matched.</text>
+              <text>Protocol number of the packets to be matched (e.g. 0 for UDP, 6 for TCP)</text>
             </description>
           </leaf>
           <leaf name="source">
