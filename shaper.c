@@ -139,7 +139,7 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 
 		/* commands are enqueue in reverse order */
 		/* define default class for non classified packetes */
-		sprintf(cmd, "tc class add dev %s parent 1: classid 1:100 htb rate 10kbit ceil %skbit", ifn, bandwidth);
+		sprintf(cmd, "tc class add dev %s parent 1:1 classid 1:100 htb rate 10kbit ceil %skbit", ifn, bandwidth);
 		nc_verb_verbose(cmd);
 		enqueue_command(cmd);
 		
