@@ -155,6 +155,21 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 		
 	}	
 	
+	else if (op & XMLDIFF_REM){
+		nc_verb_verbose("Requested to delete a qdisc.");
+	
+		char cmd[512];
+		char * ifn=0;
+	
+		ifn = getChildContent(node, "interface");
+	
+		sprintf(cmd, "tc qdisc del dev %s root", ifn); 
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);
+		
+	}
+	
+	
 	/* exec all the enqueued commands in reverse order */
 	exec_commands();
 			
@@ -213,7 +228,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 	
 	else if (op & XMLDIFF_MOD){
 	  
-		nc_verb_verbose("Requested to add a class.");
+		nc_verb_verbose("Requested to modify a class.");
 				
 		char * id=0;
 		char * prio=0;		
@@ -243,6 +258,24 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		enqueue_command(cmd);							
 						
 	}
+	
+	else if (op & XMLDIFF_REM){
+	  
+		nc_verb_verbose("Requested to delete a class.");
+				
+		char * id=0;
+		char * ifn=0;
+
+		id = getChildContent(node, "id");
+		ifn = getChildContent(node->parent, "interface");
+		
+		char cmd[512];
+		sprintf(cmd, "tc class del dev %s parent 1:1 classid 1:%s ",ifn, id); 
+		
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);							
+						
+	}	
 				
 	return EXIT_SUCCESS;
 

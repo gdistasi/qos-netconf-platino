@@ -6,8 +6,8 @@
       <bandwidth>10000</bandwidth>
 	      <class>	  
 		  <id>11</id>
-		  <rate>100</rate>
-		  <ceil>100</ceil>   
+		  <rate>200</rate>
+		  <ceil>200</ceil>   
 		  <filter>
 		    <id>11</id>
 		    <protocol>6</protocol>
