@@ -209,6 +209,40 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		enqueue_command(cmd);							
 						
 	}	
+	
+	
+	else if (op & XMLDIFF_MOD){
+	  
+		nc_verb_verbose("Requested to add a class.");
+				
+		char * id=0;
+		char * prio=0;		
+		char * rate=0;
+		char * ceil=0;
+		char * burst=0;	
+		char * ifn=0;
+
+		id = getChildContent(node, "id");
+		prio = getChildContent(node, "prio");
+		rate = getChildContent(node, "rate");
+		ceil = getChildContent(node, "ceil");
+		burst = getChildContent(node, "burst");
+		ifn = getChildContent(node->parent, "interface");
+		
+		char cmd[512];
+		sprintf(cmd, "tc class replace dev %s parent 1:1 classid 1:%s %s htb rate %skbit ceil %skbit ",ifn, id, prio, rate, ceil); 
+		
+		
+		char temp[512];		
+		if (burst!=0 && strlen(burst) > 0){
+		  sprintf(temp, " burst %s", burst);
+		  strcat(cmd, temp);
+		}
+		
+		nc_verb_verbose(cmd);
+		enqueue_command(cmd);							
+						
+	}
 				
 	return EXIT_SUCCESS;
 
@@ -243,7 +277,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 	logTransapiOperation(data, op, node, error);
 
 	/* Filter node added */
-	if (op & XMLDIFF_ADD){
+	if (op & XMLDIFF_ADD || op & XMLDIFF_MOD){
 		nc_verb_verbose("Requested to add a filter.");
 			
 		char * id;
@@ -269,8 +303,10 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		classid = getChildContent(node->parent, "id");
 		
 		char cmd[512];
-		sprintf(cmd, "tc filter add dev %s parent 1: protocol ip prio 1 u32 ", ifn); 
 		
+		//if (op & XMLDIFF_ADD || op & XMLDIFF_MOD)
+		sprintf(cmd, "tc filter add dev %s parent 1: protocol ip handle 800::%s prio 1 u32 ", ifn, id); 
+		  
 		AddIfNotEmpty(cmd, "match ip protocol", protocol, " 0xff");
 		AddIfNotEmpty(cmd, "match ip sport", sport, " 0xffff");
 		AddIfNotEmpty(cmd, "match ip dport", dport, " 0xffff");
@@ -283,7 +319,15 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		strcat(cmd, classid);
 		
 		nc_verb_verbose(cmd);
-		enqueue_command(cmd);							
+		enqueue_command(cmd);	
+		
+		// if the filter was alread present, delete the old
+		if (op & XMLDIFF_MOD){
+		      sprintf(cmd, "tc filter del dev %s parent 1: protocol ip handle 800::%s prio 1 u32", ifn, id);
+		      nc_verb_verbose(cmd);
+		      enqueue_command(cmd);	
+		}
+		
 	}
 	
     	
