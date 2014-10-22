@@ -277,7 +277,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 	logTransapiOperation(data, op, node, error);
 
 	/* Filter node added */
-	if (op & XMLDIFF_ADD || op & XMLDIFF_MOD){
+	if (op & XMLDIFF_ADD || op & XMLDIFF_MOD || op & XMLDIFF_REM){
 		nc_verb_verbose("Requested to add a filter.");
 			
 		char * id;
@@ -304,8 +304,8 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		
 		char cmd[512];
 		
-		//if (op & XMLDIFF_ADD || op & XMLDIFF_MOD)
-		sprintf(cmd, "tc filter add dev %s parent 1: protocol ip handle 800::%s prio 1 u32 ", ifn, id); 
+		if (op & XMLDIFF_ADD || op & XMLDIFF_MOD)
+		  sprintf(cmd, "tc filter add dev %s parent 1: protocol ip handle 800::%s prio 1 u32 ", ifn, id); 
 		  
 		AddIfNotEmpty(cmd, "match ip protocol", protocol, " 0xff");
 		AddIfNotEmpty(cmd, "match ip sport", sport, " 0xffff");
@@ -322,7 +322,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		enqueue_command(cmd);	
 		
 		// if the filter was alread present, delete the old
-		if (op & XMLDIFF_MOD){
+		if (op & XMLDIFF_MOD || op & XMLDIFF_REM){
 		      sprintf(cmd, "tc filter del dev %s parent 1: protocol ip handle 800::%s prio 1 u32", ifn, id);
 		      nc_verb_verbose(cmd);
 		      enqueue_command(cmd);	

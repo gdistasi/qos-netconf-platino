@@ -10,14 +10,24 @@
 		  <ceil>100</ceil>   
 		  <filter>
 		    <id>11</id>
-		    <protocol>17</protocol>
+		    <protocol>6</protocol>
 		    <destination>143.225.28.85</destination>
 		  </filter>
 	      </class>
 	</qdisc>
 </shaper> 
 
-
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+   <qdisc>
+      <interface>eth0</interface>
+      <bandwidth>10000</bandwidth>
+	      <class>	  
+		  <id>11</id>
+		  <rate>100</rate>
+		  <ceil>100</ceil>   
+	    </class>
+	</qdisc>
+</shaper> 
 
 */CREAZIONE DI UNA QDISC
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
