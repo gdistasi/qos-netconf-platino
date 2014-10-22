@@ -165,7 +165,7 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 	
 		sprintf(cmd, "tc qdisc del dev %s root", ifn); 
 		nc_verb_verbose(cmd);
-		enqueue_command(cmd);
+		system(cmd);
 		
 	}
 	
@@ -273,7 +273,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		sprintf(cmd, "tc class del dev %s parent 1:1 classid 1:%s ",ifn, id); 
 		
 		nc_verb_verbose(cmd);
-		enqueue_command(cmd);							
+		system(cmd);							
 						
 	}	
 				
@@ -310,8 +310,8 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 	logTransapiOperation(data, op, node, error);
 
 	/* Filter node added */
-	if (op & XMLDIFF_ADD || op & XMLDIFF_MOD || op & XMLDIFF_REM){
-		nc_verb_verbose("Requested to add a filter.");
+	if (op & XMLDIFF_ADD || op & XMLDIFF_MOD){
+		nc_verb_verbose("Requested to add/modify a filter.");
 			
 		char * id;
 		char * protocol;	
@@ -355,7 +355,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		enqueue_command(cmd);	
 		
 		// if the filter was alread present, delete the old
-		if (op & XMLDIFF_MOD || op & XMLDIFF_REM){
+		if (op & XMLDIFF_MOD){
 		      sprintf(cmd, "tc filter del dev %s parent 1: protocol ip handle 800::%s prio 1 u32", ifn, id);
 		      nc_verb_verbose(cmd);
 		      enqueue_command(cmd);	
@@ -363,6 +363,20 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		
 	}
 	
+	else if (op & XMLDIFF_REM){
+	      nc_verb_verbose("Requested to delete a filter.");
+	  
+	      char * id;
+	      char * ifn=0;
+       	      char cmd[512];
+	      
+	      id = getChildContent(node, "id");
+	      ifn = getChildContent(node->parent->parent, "interface");
+	      
+	      sprintf(cmd, "tc filter del dev %s parent 1: protocol ip handle 800::%s prio 1 u32", ifn, id);
+	      nc_verb_verbose(cmd);
+	      system(cmd);	
+	}
     	
 	return EXIT_SUCCESS;
 

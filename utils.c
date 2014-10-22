@@ -4,7 +4,7 @@
 #include "utils.h"
 
 
-#define MAX_COMMANDS 100
+#define MAX_COMMANDS 500
 char * commands_to_execute[MAX_COMMANDS];
 int num_cmds=0;
 

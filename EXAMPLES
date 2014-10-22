@@ -3,11 +3,11 @@
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
    <qdisc>
       <interface>eth0</interface>
-      <bandwidth>10000</bandwidth>
+      <bandwidth>500</bandwidth>
 	      <class>	  
 		  <id>11</id>
-		  <rate>200</rate>
-		  <ceil>200</ceil>   
+		  <rate>400</rate>
+		  <ceil>500</ceil>   
 		  <filter>
 		    <id>11</id>
 		    <protocol>6</protocol>
@@ -21,11 +21,7 @@
    <qdisc>
       <interface>eth0</interface>
       <bandwidth>10000</bandwidth>
-	      <class>	  
-		  <id>11</id>
-		  <rate>100</rate>
-		  <ceil>100</ceil>   
-	    </class>
+	
 	</qdisc>
 </shaper> 
 
