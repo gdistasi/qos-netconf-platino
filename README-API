@@ -100,6 +100,8 @@ Note:
 1) Il componente chiamante (il Resource Manager?) deve essere a conoscenza ovviamente del percorso ma anche dei nomi delle interfacce effettivamente attraversate dal flusso e della relativa capacità (si ricorda che l'indirizzo IP da specificare come opzione della connect è un indirizzo genericamente di controllo per il nodo).
 Nell'esempio si è supposto che l'interfaccia attraversata sia sempre eth0 e che la banda relativa sia di 10 Mbit/s (in accordo con il fatto che, come da schema XSL distribuito con questo README, i valori sono espressi in kbit/s).
 
+API in corso di implementazione:
 
- 
-  
+>> allocate_flow PATH BANDWIDTH
+PATH := SOURCE, ROUTER0, ROUTER1, ... DESTINATION
+

@@ -25,6 +25,20 @@
 	</qdisc>
 </shaper> 
 
+
+<shaper xmlns="http://www.comics.unina.it/nc/shaper">
+   <qdisc>
+      <interface>eth0</interface>
+      <bandwidth>500</bandwidth>
+	      <class>	  
+		  <id>11</id>
+		  <rate>400</rate>
+		  <ceil>500</ceil>   
+	
+	      </class>
+	</qdisc>
+</shaper> 
+
 */CREAZIONE DI UNA QDISC
 <shaper xmlns="http://www.comics.unina.it/nc/shaper">
     

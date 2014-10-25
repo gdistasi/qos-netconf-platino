@@ -21,7 +21,7 @@ CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 LIBTOOL = $(libtool) --tag=CC --quiet
 
-SRCS = @PROJECTNAME@.c
+SRCS = @PROJECTNAME@.c utils.c
 OBJDIR = .obj
 LOBJS = $(SRCS:%.c=$(OBJDIR)/%.lo)
 
