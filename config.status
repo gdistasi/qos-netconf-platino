@@ -427,7 +427,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/giovanni/Tools/qos-netconf'
+ac_pwd='/home/tssuser/pdp-pep/qos-netconf'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 test -n "$AWK" || AWK=awk
@@ -603,7 +603,7 @@ S["PROJECTNAME"]="shaper"
 S["target_alias"]=""
 S["host_alias"]=""
 S["build_alias"]=""
-S["LIBS"]="-L/usr/lib -lxml2 -lnetconf "
+S["LIBS"]="-lxml2 -lnetconf "
 S["ECHO_T"]=""
 S["ECHO_N"]="-n"
 S["ECHO_C"]=""
