@@ -1,4 +1,9 @@
 #include <stdlib.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+#include <sys/types.h>
+#include <ifaddrs.h>
+
 #include <libxml/tree.h>
 #include <libnetconf_xml.h>
 #include "utils.h"
@@ -116,7 +121,68 @@ return result;
 }
 
 
+/* return a number different from 0 if ipAddress is a valid address */
+int isValidIpAddress(char *ipAddress)
+{
+    struct sockaddr_in sa;
+    int result = inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
+    return result != 0;
+}
 
+int getInterfaceFromIp(char * ip, char * ifn) {
+  struct ifaddrs *addrs, *iap;
+  struct sockaddr_in *sa;
+  char buf[32];
+  int found=0;
+
+  getifaddrs(&addrs);
+  for (iap = addrs; iap != NULL; iap = iap->ifa_next) {
+    if (iap->ifa_addr && (iap->ifa_flags & IFF_UP) && iap->ifa_addr->sa_family == AF_INET) {
+      sa = (struct sockaddr_in *)(iap->ifa_addr);
+      inet_ntop(iap->ifa_addr->sa_family, (void *)&(sa->sin_addr), buf, sizeof(buf));
+      if (!strcmp(ip, buf)) {
+        sprintf(ifn, "%s\n", iap->ifa_name);
+	found=1;
+      }
+    }
+  }
+  freeifaddrs(addrs);
+
+  return found;
+}
+
+
+
+char * getInterfaceName(xmlNode *father, char *childName)
+{
+	char result[IFNAMSIZ];
+	result[0]='\0';
+	char * ifn = malloc(IFNAMSIZ);
+
+
+	xmlNode*node=father->children;
+
+	if (strcmp((char*)node->name, childName)==0){
+		strncpy(result, (char*)node->last->content, IFNAMSIZ);
+	} else {
+		while ((node=node->next)!=0){
+			if (strcmp((char*)node->name, childName)==0){	
+			  strncpy(result, (char*)node->last->content, IFNAMSIZ);
+			  break;
+			}
+		}
+	}
+	
+	if (isValidIpAddress(result)){
+	    if (getInterfaceFromIp(result, ifn)==0){
+		strcpy(ifn,"");
+	    }	    
+	} else {
+	   strncpy(ifn, result, sizeof(IFNAMSIZ));
+	}
+	
+	return ifn;
+}
 
 
 
