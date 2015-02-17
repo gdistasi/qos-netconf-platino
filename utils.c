@@ -141,7 +141,7 @@ int getInterfaceFromIp(char * ip, char * ifn) {
       sa = (struct sockaddr_in *)(iap->ifa_addr);
       inet_ntop(iap->ifa_addr->sa_family, (void *)&(sa->sin_addr), buf, sizeof(buf));
       if (!strcmp(ip, buf)) {
-        sprintf(ifn, "%s\n", iap->ifa_name);
+        sprintf(ifn, "%s", iap->ifa_name);
 	found=1;
       }
     }
@@ -156,7 +156,7 @@ int getInterfaceFromIp(char * ip, char * ifn) {
 char * getInterfaceName(xmlNode *father, char *childName)
 {
 	char result[IFNAMSIZ];
-	result[0]='\0';
+	//result[0]='\0';
 	char * ifn = malloc(IFNAMSIZ);
 
 
@@ -172,13 +172,17 @@ char * getInterfaceName(xmlNode *father, char *childName)
 			}
 		}
 	}
+
+	nc_verb_verbose("RESULT IS EQUAL TO: %s.", result);
+
 	
 	if (isValidIpAddress(result)){
 	    if (getInterfaceFromIp(result, ifn)==0){
 		strcpy(ifn,"");
 	    }	    
 	} else {
-	   strncpy(ifn, result, sizeof(IFNAMSIZ));
+	   nc_verb_verbose("RESULT IS EQUAL TO: %s.", result);
+	   strncpy(ifn, result, IFNAMSIZ);
 	}
 	
 	return ifn;
