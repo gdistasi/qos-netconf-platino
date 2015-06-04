@@ -132,7 +132,7 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 		char * ifn=0;
 		char * bandwidth=0;	
 
-		ifn = getChildContent(node, "interface");
+		ifn = getInterfaceName(node, "interface");
 		bandwidth = getChildContent(node, "bandwidth");
 		
 		char cmd[512];
@@ -161,7 +161,7 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 		char cmd[512];
 		char * ifn=0;
 	
-		ifn = getChildContent(node, "interface");
+		ifn = getInterfaceName(node, "interface");
 	
 		sprintf(cmd, "tc qdisc del dev %s root", ifn); 
 		nc_verb_verbose(cmd);
@@ -208,10 +208,10 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		rate = getChildContent(node, "rate");
 		ceil = getChildContent(node, "ceil");
 		burst = getChildContent(node, "burst");
-		ifn = getChildContent(node->parent, "interface");
+		ifn = getInterfaceName(node->parent, "interface");
 		
 		char cmd[512];
-		sprintf(cmd, "tc class add dev %s parent 1:1 classid 1:%s %s htb rate %skbit ceil %skbit ",ifn, id, prio, rate, ceil); 
+		sprintf(cmd, "tc class add dev %s parent 1:1 classid 1:%s htb rate %skbit ceil %skbit ", ifn, id, rate, ceil); 
 		
 		
 		char temp[512];		
@@ -242,7 +242,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		rate = getChildContent(node, "rate");
 		ceil = getChildContent(node, "ceil");
 		burst = getChildContent(node, "burst");
-		ifn = getChildContent(node->parent, "interface");
+		ifn = getInterfaceName(node->parent, "interface");
 		
 		char cmd[512];
 		sprintf(cmd, "tc class replace dev %s parent 1:1 classid 1:%s %s htb rate %skbit ceil %skbit ",ifn, id, prio, rate, ceil); 
@@ -267,7 +267,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		char * ifn=0;
 
 		id = getChildContent(node, "id");
-		ifn = getChildContent(node->parent, "interface");
+		ifn = getInterfaceName(node->parent, "interface");
 		
 		char cmd[512];
 		sprintf(cmd, "tc class del dev %s parent 1:1 classid 1:%s ",ifn, id); 
@@ -332,7 +332,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
 		dport = getChildContent(node, "destinationPort");
 		pmark = getChildContent(node, "packetMark");
 		
-		ifn = getChildContent(node->parent->parent, "interface");
+		ifn = getInterfaceName(node->parent->parent, "interface");
 		classid = getChildContent(node->parent, "id");
 		
 		char cmd[512];
@@ -371,7 +371,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class_shaper_filter (void ** data
        	      char cmd[512];
 	      
 	      id = getChildContent(node, "id");
-	      ifn = getChildContent(node->parent->parent, "interface");
+	      ifn = getInterfaceName(node->parent->parent, "interface");
 	      
 	      sprintf(cmd, "tc filter del dev %s parent 1: protocol ip handle 800::%s prio 1 u32", ifn, id);
 	      nc_verb_verbose(cmd);

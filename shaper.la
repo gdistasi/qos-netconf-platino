@@ -17,7 +17,7 @@ old_library=''
 inherited_linker_flags=' -pthread'
 
 # Libraries that this one depends upon.
-dependency_libs=' /usr/local/lib//libnetconf.la /usr/lib/i386-linux-gnu/libcurl.la -lssh2 -lxslt -lxml2 -ldl'
+dependency_libs=' -lz -lm /usr/local/lib//libnetconf.la /usr/lib/i386-linux-gnu/libcurl.la -lssh2 -lxslt -lxml2 -ldl'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''

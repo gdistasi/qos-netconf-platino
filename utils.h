@@ -9,5 +9,8 @@ void logTransapiOperation(void ** data, XMLDIFF_OP op, xmlNodePtr node, struct n
 
 char*getChildContent(xmlNode*father, char*childName);
 
+char * getInterfaceName(xmlNode *father, char *childName);
+
+
 void enqueue_command(char * cmd);
 void exec_commands();
