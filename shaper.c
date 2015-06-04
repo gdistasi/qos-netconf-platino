@@ -245,7 +245,7 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		ifn = getInterfaceName(node->parent, "interface");
 		
 		char cmd[512];
-		sprintf(cmd, "tc class replace dev %s parent 1:1 classid 1:%s %s htb rate %skbit ceil %skbit ",ifn, id, prio, rate, ceil); 
+		sprintf(cmd, "tc class replace dev %s parent 1:1 classid 1:%s htb rate %skbit ceil %skbit ",ifn, id, rate, ceil); 
 		
 		
 		char temp[512];		
