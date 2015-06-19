@@ -10,6 +10,8 @@
 
 #include "utils.h"
 
+int use_fqcodel = 0;
+
 /* transAPI version which must be compatible with libnetconf */
 int transapi_version = 5;
 
@@ -138,6 +140,15 @@ int callback_shaper_shaper_shaper_qdisc (void ** data, XMLDIFF_OP op, xmlNodePtr
 		char cmd[512];
 
 		/* commands are enqueue in reverse order */
+	   
+	   
+	        /* leaf is the fq_codel discipline */
+	        if (use_fqcodel==1){
+		   sprintf(cmd, "tc class add dev %s parent 1:100 fq_codel", ifn);
+		   enqueue_command(cmd);
+		} 
+	  
+	   
 		/* define default class for non classified packetes */
 		sprintf(cmd, "tc class add dev %s parent 1:1 classid 1:100 htb rate 10kbit ceil %skbit", ifn, bandwidth);
 		nc_verb_verbose(cmd);
@@ -211,7 +222,15 @@ int callback_shaper_shaper_shaper_qdisc_shaper_class (void ** data, XMLDIFF_OP o
 		ifn = getInterfaceName(node->parent, "interface");
 		
 		char cmd[512];
-		sprintf(cmd, "tc class add dev %s parent 1:1 classid 1:%s htb rate %skbit ceil %skbit ", ifn, id, rate, ceil); 
+
+	   
+	        if (use_fqcodel==1){
+		   sprintf(cmd, "tc class add dev %s parent 1:%s fq_codel", ifn, id);
+		   enqueue_command(cmd);
+	        }
+	   
+	   
+	        sprintf(cmd, "tc class add dev %s parent 1:1 classid 1:%s htb rate %skbit ceil %skbit ", ifn, id, rate, ceil); 
 		
 		
 		char temp[512];		
