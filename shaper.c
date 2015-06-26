@@ -10,7 +10,7 @@
 
 #include "utils.h"
 
-int use_fqcodel = 0;
+int use_fqcodel = 1;
 
 /* transAPI version which must be compatible with libnetconf */
 int transapi_version = 5;
